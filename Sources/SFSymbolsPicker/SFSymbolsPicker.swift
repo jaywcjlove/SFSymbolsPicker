@@ -4,7 +4,7 @@
 import SwiftUI
 
 class SFSymbolsPickerVM: ObservableObject {
-    @Published var size: NSSize = .init(width: 316, height: 260)
+    @Published var size: CGSize = .init(width: 316, height: 260)
     @Published var navigationTitle: String = "select_a_symbol"
 }
 
@@ -71,7 +71,7 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
             }
         })
     }
-    public func panelSize(_ size: NSSize) -> some View {
+    public func panelSize(_ size: CGSize) -> some View {
         view.size = size
         return self
     }

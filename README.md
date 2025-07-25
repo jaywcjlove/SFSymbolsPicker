@@ -34,6 +34,8 @@
 SFSymbolsPicker
 ===
 
+![SFSymbolsPicker for macOS/iOS](https://github.com/user-attachments/assets/4d708f08-c0b0-4299-9c4b-bf188ee31a70)
+
 A modern SwiftUI component for selecting SF Symbols in your macOS and iOS applications. Provides an intuitive interface with search functionality, pagination, and multi-language support.
 
 ## Features
