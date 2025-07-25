@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  SFSymbolsPicker
+
+  Created by wong on 7/25/25.
+  
+*/
+
+"search" = "검색...";
+"select_a_symbol" = "기호 선택";
