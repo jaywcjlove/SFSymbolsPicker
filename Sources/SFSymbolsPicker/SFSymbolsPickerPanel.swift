@@ -74,8 +74,8 @@ public struct SFSymbolsPickerPanel: View {
         .frame(maxWidth: .infinity)
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
         .searchable(text: $searchText, prompt: vm.prompt)
+        #endif
         .onChange(of: selection) { oldValue, newValue in
             if (vm.autoDismiss) {
                 presentationMode.wrappedValue.dismiss()
