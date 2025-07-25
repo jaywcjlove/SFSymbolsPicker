@@ -26,7 +26,6 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
     @Binding var selection: String
     @State private var selectedSymbol: String = ""
     @ObservedObject var vm: SFSymbolsPickerViewModel
-    @State private var searchText = ""
     @State var isPresented: Bool = false
     @ViewBuilder let label: LabelView?
     public init(

@@ -11,7 +11,6 @@ public struct SFSymbolsPickerPanel: View {
     @Binding var selection: String
     @EnvironmentObject var vm: SFSymbolsPickerViewModel
     @Environment(\.presentationMode) var presentationMode
-    @State private var searchText = ""
     public init(selection: Binding<String>) {
         self._selection = selection
     }
@@ -43,7 +42,7 @@ public struct SFSymbolsPickerPanel: View {
                             .buttonStyle(.plain)
                             .id(icon.hash)
                         }
-                        if vm.hasMoreSymbols && searchText.isEmpty {
+                        if vm.hasMoreSymbols && vm.searchText.isEmpty {
                             if vm.isLoadingMore {
                                 ProgressView()
                                     .padding()
@@ -61,7 +60,7 @@ public struct SFSymbolsPickerPanel: View {
                 .scrollIndicators(.hidden)
                 #if os(macOS)
                 .safeAreaInset(edge: .top, spacing: 0) {
-                    SymbolPanelSearch(value: $searchText, prompt: vm.prompt)
+                    SymbolPanelSearch(value: $vm.searchText, prompt: vm.prompt)
                 }
                 #endif
                 .scrollDisabled(false)
@@ -81,8 +80,8 @@ public struct SFSymbolsPickerPanel: View {
                 presentationMode.wrappedValue.dismiss()
             }
         }
-        .onChange(of: searchText) { oldValue, newValue in
-            if(newValue.isEmpty || searchText.isEmpty) {
+        .onChange(of: vm.searchText) { oldValue, newValue in
+            if(newValue.isEmpty || vm.searchText.isEmpty) {
                 vm.reset()
             } else {
                 vm.searchSymbols(with: newValue)

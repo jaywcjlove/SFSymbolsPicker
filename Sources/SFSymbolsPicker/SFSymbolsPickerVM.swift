@@ -14,6 +14,7 @@ public class SFSymbolsPickerViewModel: ObservableObject {
     private var searchTask: Task<Void, Never>?
     let autoDismiss: Bool
     let prompt: String
+    @Published var searchText = ""
     @Published var symbols: [String] = []
     @Published var isLoading: Bool = true
     @Published var isLoadingMore: Bool = false
