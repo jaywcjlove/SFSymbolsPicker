@@ -84,6 +84,7 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
 #Preview {
     @Previewable @State var selection: String = "star.bubble"
     VStack(spacing: 23) {
+        SFSymbolsPicker(selection: $selection, prompt: String(localized: "Search symbols..."))
         SFSymbolsPicker(selection: $selection, autoDismiss: false)
         SFSymbolsPicker(selection: $selection, autoDismiss: false) {
             Text("选择符号")
@@ -95,5 +96,5 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
             .font(.title3)
             .padding()
     }
-    .frame(width: 320, height: 230)
+    .frame(width: 320, height: 330)
 }
