@@ -71,6 +71,8 @@ dependencies: [
 Use the default picker button that displays a popover on macOS and a sheet on iOS:
 
 ```swift
+import SFSymbolsPicker
+
 struct ContentView: View {
     @State var selection: String = "star.bubble"
     
