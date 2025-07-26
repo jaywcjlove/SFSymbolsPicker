@@ -25,6 +25,7 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
     @ObservedObject var view: SFSymbolsPickerVM = .init()
     @Binding var selection: String
     @State private var selectedSymbol: String = ""
+    @State private var searchText = ""
     @ObservedObject var vm: SFSymbolsPickerViewModel
     @State var isPresented: Bool = false
     @ViewBuilder let label: LabelView?
@@ -64,9 +65,25 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
             }
         }
 #endif
+        .onAppear() {
+            vm.searchText = searchText
+        }
         .onChange(of: isPresented, initial: false, { old, val in
             if isPresented == false {
                 selection = selectedSymbol
+                searchText = vm.searchText
+            } else {
+                // 当弹窗打开时，恢复之前的搜索文本
+                vm.searchText = searchText
+            }
+        })
+        .onChange(of: selection, initial: false, { old, val in
+            if searchText.isEmpty == false {
+                vm.searchText = searchText
+                vm.searchSymbols(with: searchText)
+            }
+            if old != val, selection != selectedSymbol {
+                selectedSymbol = selection
             }
         })
     }

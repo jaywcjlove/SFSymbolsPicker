@@ -74,7 +74,7 @@ public class SymbolLoader: @unchecked Sendable {
                 // Notify observers that symbols have been loaded successfully
                 NotificationCenter.default.post(name: .symbolsLoaded, object: nil)
             }
-            print("Successfully loaded \(symbols.count) SF Symbols.")
+            //print("Successfully loaded \(symbols.count) SF Symbols.")
         } catch {
             print("Failed to load SF Symbols: \(error.localizedDescription)")
             await handleLoadingFailure()

@@ -80,7 +80,7 @@ public struct SFSymbolsPickerPanel: View {
                 presentationMode.wrappedValue.dismiss()
             }
         }
-        .onChange(of: vm.searchText) { oldValue, newValue in
+        .onChange(of: vm.searchText, initial: true) { oldValue, newValue in
             if(newValue.isEmpty || vm.searchText.isEmpty) {
                 vm.reset()
             } else {

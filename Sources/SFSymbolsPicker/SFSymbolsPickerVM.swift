@@ -60,16 +60,15 @@ public class SFSymbolsPickerViewModel: ObservableObject {
     public func searchSymbols(with name: String) {
         // Cancel any existing search task
         searchTask?.cancel()
-        
         // Create a new search task with debounce
         searchTask = Task {
             try? await Task.sleep(nanoseconds: 300_000_000) // 300ms debounce
             guard !Task.isCancelled else { return }
             
-            isSearching = true
             DispatchQueue.main.async {
                 self.symbols = self.loader.getSymbols(named: name)
                 self.isLoading = false
+                self.isSearching = true
             }
         }
     }
