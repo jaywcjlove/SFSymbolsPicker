@@ -15,8 +15,9 @@ public extension SFSymbolsPicker where LabelView == EmptyView {
         autoDismiss: Bool = true
     ) {
         self._selection = selection
+        self.prompt = prompt
+        self.autoDismiss = autoDismiss
         self.label = nil
-        self.vm = SFSymbolsPickerViewModel(prompt: prompt, autoDismiss: autoDismiss)
     }
 }
 
@@ -24,10 +25,9 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
     @Environment(\.locale) var locale
     @ObservedObject var view: SFSymbolsPickerVM = .init()
     @Binding var selection: String
-    @State private var selectedSymbol: String = ""
-    @State private var searchText = ""
-    @ObservedObject var vm: SFSymbolsPickerViewModel
     @State var isPresented: Bool = false
+    @State var autoDismiss: Bool = false
+    @State var prompt: String = String("search")
     @ViewBuilder let label: LabelView?
     public init(
         selection: Binding<String>,
@@ -36,8 +36,9 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
         labelView: (() -> LabelView)? = nil
     ) {
         self._selection = selection
+        self.prompt = prompt
+        self.autoDismiss = autoDismiss
         self.label = labelView?()
-        self.vm = SFSymbolsPickerViewModel(prompt: prompt, autoDismiss: autoDismiss)
     }
     public var body: some View {
         Button(action: {
@@ -49,43 +50,14 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
                 Text("select_a_symbol".localized(locale: locale))
             }
         })
-#if os(macOS)
-        .popover(isPresented: $isPresented) {
-            SFSymbolsPickerPanel(selection: $selectedSymbol)
-                .environmentObject(vm)
-                .frame(width: view.size.width, height: view.size.height)
-        }
-#endif
-#if os(iOS)
-        .sheet(isPresented: $isPresented) {
-            NavigationStack {
-                SFSymbolsPickerPanel(selection: $selectedSymbol)
-                    .environmentObject(vm)
-                    .navigationTitle(view.navigationTitle.localized(locale: locale))
-            }
-        }
-#endif
-        .onAppear() {
-            vm.searchText = searchText
-        }
-        .onChange(of: isPresented, initial: false, { old, val in
-            if isPresented == false {
-                selection = selectedSymbol
-                searchText = vm.searchText
-            } else {
-                // 当弹窗打开时，恢复之前的搜索文本
-                vm.searchText = searchText
-            }
-        })
-        .onChange(of: selection, initial: false, { old, val in
-            if searchText.isEmpty == false {
-                vm.searchText = searchText
-                vm.searchSymbols(with: searchText)
-            }
-            if old != val, selection != selectedSymbol {
-                selectedSymbol = selection
-            }
-        })
+        .sfSymbolsPicker(
+            isPresented: $isPresented,
+            selection: $selection,
+            prompt: "Search symbols...",
+            autoDismiss: autoDismiss,
+            panelSize: view.size,
+            navigationTitle: view.navigationTitle
+        )
     }
     public func panelSize(_ size: CGSize) -> SFSymbolsPicker {
         view.size = size
@@ -97,9 +69,17 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
     }
 }
 
+
+extension Notification.Name {
+    public static let showSymbolsPickerPopover = Notification.Name("com.sfsymbolepicker.showSymbolsPickerPopover")
+}
+
 #Preview {
     @Previewable @State var selection: String = "star.bubble"
+    @Previewable @State var isPresented: Bool = false
+    
     VStack(spacing: 23) {
+        // 使用 SFSymbolsPicker 组件
         SFSymbolsPicker(selection: $selection, prompt: String(localized: "Search symbols..."))
         SFSymbolsPicker(selection: $selection, autoDismiss: false)
         SFSymbolsPicker(selection: $selection, autoDismiss: false) {
@@ -107,10 +87,13 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
         }
         SFSymbolsPicker(selection: $selection)
             .panelSize(.init(width: 230, height: 100))
+            
+        Divider()
+        
         Image(systemName: selection)
             .font(.system(size: 34))
             .font(.title3)
             .padding()
     }
-    .frame(width: 320, height: 330)
+    .frame(width: 320, height: 400)
 }

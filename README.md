@@ -82,6 +82,60 @@ struct ContentView: View {
 }
 ```
 
+### Using the `.sfSymbolsPicker` Modifier
+
+Use the `.sfSymbolsPicker` modifier to add symbol selection functionality to any view:
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    @State private var isPresented = false
+    @State private var selectedSymbol = "star"
+    
+    var body: some View {
+        Button("Select Symbol") {
+            isPresented = true
+        }
+        .sfSymbolsPicker(isPresented: $isPresented, selection: $selectedSymbol)
+    }
+}
+```
+
+### Advanced Modifier Configuration
+
+Configure the `.sfSymbolsPicker` modifier with additional parameters:
+
+```swift
+struct AdvancedView: View {
+    @State private var isPresented = false
+    @State private var selectedSymbol = "heart.fill"
+    
+    var body: some View {
+        VStack {
+            Image(systemName: selectedSymbol)
+                .font(.system(size: 50))
+                .foregroundColor(.red)
+                .onTapGesture {
+                    isPresented = true
+                }
+                .sfSymbolsPicker(
+                    isPresented: $isPresented,
+                    selection: $selectedSymbol,
+                    prompt: "Search icons...",
+                    autoDismiss: true,
+                    panelSize: CGSize(width: 400, height: 350),
+                    navigationTitle: "Choose Icon"
+                )
+            
+            Text("Tap the icon to select a new symbol")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+```
+
 ### Custom Button Style
 
 Customize the picker button with your own content:
