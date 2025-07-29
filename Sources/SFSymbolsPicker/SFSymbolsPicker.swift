@@ -69,21 +69,16 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
     }
 }
 
-
-extension Notification.Name {
-    public static let showSymbolsPickerPopover = Notification.Name("com.sfsymbolepicker.showSymbolsPickerPopover")
-}
-
 #Preview {
     @Previewable @State var selection: String = "star.bubble"
     @Previewable @State var isPresented: Bool = false
     
     VStack(spacing: 23) {
-        // 使用 SFSymbolsPicker 组件
+        // Using SFSymbolsPicker component
         SFSymbolsPicker(selection: $selection, prompt: String(localized: "Search symbols..."))
         SFSymbolsPicker(selection: $selection, autoDismiss: false)
         SFSymbolsPicker(selection: $selection, autoDismiss: false) {
-            Text("选择符号")
+            Text("Choose Symbol")
         }
         SFSymbolsPicker(selection: $selection)
             .panelSize(.init(width: 230, height: 100))
