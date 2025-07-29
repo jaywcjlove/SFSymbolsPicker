@@ -87,13 +87,13 @@ public struct SFSymbolsPicker<LabelView>: View where LabelView : View  {
             }
         })
     }
-    public func panelSize(_ size: CGSize) -> some View {
+    public func panelSize(_ size: CGSize) -> SFSymbolsPicker {
         view.size = size
-        return self
+        return self as SFSymbolsPicker
     }
-    public func navigationTitle(_ title: String) -> some View {
+    public func navigationTitle(_ title: String) -> SFSymbolsPicker {
         view.navigationTitle = title
-        return self
+        return self as SFSymbolsPicker
     }
 }
 

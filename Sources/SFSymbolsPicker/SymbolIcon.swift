@@ -48,7 +48,6 @@ private struct SymbolButtonStyle: ButtonStyle {
     }
 }
 
-
 #Preview {
     @Previewable @State var saturation: String = "star.bubble"
     VStack {
