@@ -101,7 +101,7 @@ public extension View {
     ///   - panelSize: Panel size (macOS only)
     ///   - navigationTitle: Navigation title (iOS only)
     /// - Returns: View with applied modifier
-    func sfSymbolsPicker(
+    public func sfSymbolsPicker(
         isPresented: Binding<Bool>,
         selection: Binding<String>,
         prompt: String = String("search"),
