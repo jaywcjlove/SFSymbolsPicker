@@ -91,7 +91,7 @@ public struct SFSymbolsPickerModifier: ViewModifier {
 }
 
 // MARK: - View Extension
-public extension View {
+extension View {
     /// Add SF Symbols picker modifier
     /// - Parameters:
     ///   - isPresented: Binding to control picker visibility
