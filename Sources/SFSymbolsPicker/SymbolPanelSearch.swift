@@ -7,6 +7,29 @@
 
 import SwiftUI
 
+internal extension View {
+    @ViewBuilder func glassEffectButton(isTextFieldFocused: Bool = false) -> some View {
+        if #available(macOS 26.0, iOS 26, *) {
+            self.glassEffect(
+                isTextFieldFocused == true ? .regular.tint(Color.accentColor.opacity(0.15)) : .regular.interactive(),
+                in: .capsule
+            )
+        } else {
+            self.background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.gray.opacity(0.1))
+                        .background(.ultraThinMaterial)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(
+                                    isTextFieldFocused ? Color.accentColor.opacity(0.67) : Color.clear, lineWidth: 2
+                                )
+                        )
+                )
+        }
+    }
+}
+
 struct SymbolPanelSearch: View {
     @Environment(\.locale) var locale
     @Binding var value: String
@@ -19,15 +42,7 @@ struct SymbolPanelSearch: View {
                 .textFieldStyle(.plain)
                 .padding(.vertical, 6)
                 .padding(.leading, 28)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.gray.opacity(0.1))
-                        .background(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(isTextFieldFocused ? Color.accentColor.opacity(0.67) : Color.clear, lineWidth: 2)
-                        )
-                )
+                .glassEffectButton(isTextFieldFocused: isTextFieldFocused)
                 .animation(.easeInOut(duration: 0.2), value: isTextFieldFocused)
             HStack {
                 Image(systemName: "magnifyingglass")
@@ -52,4 +67,11 @@ struct SymbolPanelSearch: View {
         .padding(.horizontal, 6)
         .padding(.vertical, 6)
     }
+}
+
+#Preview {
+    VStack(spacing: 23) {
+        SymbolPanelSearch(value: .constant(""), prompt: "prompt")
+    }
+    .frame(width: 320, height: 400)
 }
