@@ -11,9 +11,12 @@ public struct SFSymbolsPickerPanel: View {
     @Binding var selection: String
     @EnvironmentObject var vm: SFSymbolsPickerViewModel
     @Environment(\.presentationMode) var presentationMode
+    @StateObject private var storageManager = SymbolStorageManager()
+
     public init(selection: Binding<String>) {
         self._selection = selection
     }
+
     public var body: some View {
         VStack {
             if(vm.isLoading) {
@@ -28,20 +31,10 @@ public struct SFSymbolsPickerPanel: View {
                         ],
                         spacing: 8
                     ) {
-                        ForEach(vm.symbols, id: \.hash) { icon in
-                            Button {
-                                withAnimation {
-                                    self.selection = icon
-                                }
-                            } label: {
-                                SymbolIcon(
-                                    symbolName: icon,
-                                    selection: $selection
-                                )
-                            }
-                            .buttonStyle(.plain)
-                            .id(icon.hash)
-                        }
+                        symbolSection(title: "Favorites", symbols: favoriteSymbols)
+                        symbolSection(title: "Recent", symbols: recentSymbols)
+                        symbolSection(title: "All Symbols", symbols: vm.symbols)
+
                         if vm.hasMoreSymbols && vm.searchText.isEmpty {
                             if vm.isLoadingMore {
                                 ProgressView()
@@ -76,6 +69,8 @@ public struct SFSymbolsPickerPanel: View {
         .searchable(text: $vm.searchText, prompt: vm.prompt)
         #endif
         .onChange(of: selection) { oldValue, newValue in
+            guard oldValue != newValue else { return }
+            storageManager.addRecent(newValue)
             if (vm.autoDismiss) {
                 presentationMode.wrappedValue.dismiss()
             }
@@ -87,6 +82,44 @@ public struct SFSymbolsPickerPanel: View {
                 vm.searchSymbols(with: newValue)
             }
         }
+    }
+
+    private var favoriteSymbols: [String] {
+        storageManager.favoriteSymbols(from: vm.symbols, matching: vm.searchText)
+    }
+
+    private var recentSymbols: [String] {
+        storageManager.recentSymbols(from: vm.symbols, matching: vm.searchText)
+    }
+
+    @ViewBuilder
+    private func symbolSection(title: String, symbols: [String]) -> some View {
+        if !symbols.isEmpty {
+            Section {
+                ForEach(symbols, id: \.self) { icon in
+                    SymbolIcon(
+                        symbolName: icon,
+                        selection: $selection,
+                        isFavorite: storageManager.isFavorite(icon),
+                        onFavoriteToggle: {
+                            storageManager.toggleFavorite(icon)
+                        }
+                    )
+                    .id(icon)
+                }
+            } header: {
+                sectionHeader(title: title)
+            }
+        }
+    }
+
+    private func sectionHeader(title: String) -> some View {
+        Text(title)
+            .font(.headline)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
+            .padding(.bottom, 4)
+            .gridCellColumns(10)
     }
 }
 
